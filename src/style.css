@@ -1,8 +1,86 @@
-/* @font-face {
-    font-family: 'newFont';
-    src: url(./newFont.ttf) format('truetype');
-} */
+/* Global styling */
+
+@font-face {
+    font-family: 'lato-light';
+    src: url(./fonts/Lato-Light.ttf) format('truetype');
+}
+
+:root {
+    --theme-color: rgb(207, 55, 113);
+    --theme-contrast: rgb(233, 233, 233);
+}
+
+* {
+    box-sizing: border-box;
+    user-select: none;
+    font-family: 'lato-light', Arial, Helvetica, sans-serif;
+}
 
 body {
-    background-color: aqua;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* Main layout */
+
+body {
+    height: 100vh;
+    width: auto;
+    
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    grid-template-rows: 40px 1fr;
+}
+
+.header {
+    grid-column: span 2;
+}
+
+
+/* Sidebar */
+
+.sidebar {
+    background-color: var(--theme-contrast);
+}
+
+
+/* Header */
+
+.svg {
+    height: 20px;
+    width: auto;
+    filter: invert(100%);
+}
+
+.img {
+    border-radius: 100%;
+    height: 25px;
+    width: auto;
+}
+
+.header {
+    background-color: var(--theme-color);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    padding: 0 2rem;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    margin-right: auto;
+}
+
+.search-bar input {
+    flex: auto;
+}
+
+
+/* Main content */
+
+.main {
+    background-color: white;
 }
