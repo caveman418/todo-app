@@ -1,5 +1,29 @@
 import * as dom from './dom';
 
+let projectList = [];
+
+const Task = (task,inputDate) => { //Task factory
+    return {task,inputDate};
+}
+
+const Project = (name) => { //Project factory
+    let tasks = [];
+    const add = (taskObj) => {
+        tasks.push(taskObj);
+    }
+    const remove = (taskObj) => {
+        const index = task.indexOf(taskObj);
+        if (index > -1) { //if the input parameter exists
+            tasks.splice(index,1);
+        }
+    }
+    return {name,add,remove};
+}
+
+let proj1 = Project('proj1'); //for testing purposes
+let proj2 = Project('proj2'); //for testing purposes
+projectList.push(proj1,proj2); //for testing purposes
+
 const createHeader = () => {
     const header = dom.createDiv('header');
 
@@ -21,26 +45,92 @@ const createHeader = () => {
     dom.body.append(header);
 }
 
+const createTaskPopup = () => {
+    const popup = dom.createDiv('form-popup task');
+
+    const form = document.createElement('form');
+    form.classList.add('form-container');
+    form.setAttribute('action','');
+
+    const h = document.createElement('h1');
+    h.textContent = 'New Task';
+
+    const task = dom.createInput('title','text','Task');
+    const date = dom.createInput('date','date','Due date');
+    const time = dom.createInput('time','time','Time');
+
+    const submitButton = document.createElement('button');
+    submitButton.setAttribute('type','submit');
+    submitButton.classList.add('submit');
+    submitButton.textContent = 'Add task';
+
+    const exitButton = document.createElement('button');
+    exitButton.setAttribute('type','button');
+    exitButton.classList.add('exit');
+    exitButton.textContent = 'Exit';
+
+    form.append(h,...task,...date,...time,submitButton,exitButton);
+
+    popup.append(form);
+
+    dom.body.append(popup);
+}
+
+const createProjPopup = () => {
+    const popup = dom.createDiv('form-popup proj');
+
+    const form = document.createElement('form');
+    form.classList.add('form-container');
+    form.setAttribute('action','');
+
+    const h = document.createElement('h1');
+    h.textContent = 'New Project';
+
+    const name = dom.createInput('name','text','Project title');
+
+    const submitButton = document.createElement('button');
+    submitButton.setAttribute('type','submit');
+    submitButton.classList.add('submit');
+    submitButton.textContent = 'Add task';
+
+    const exitButton = document.createElement('button');
+    exitButton.setAttribute('type','button');
+    exitButton.classList.add('exit');
+    exitButton.textContent = 'Exit';
+
+    form.append(h,...name,submitButton,exitButton);
+
+    popup.append(form);
+
+    dom.body.append(popup);
+}
+
 const createSidebar = () => {
     const sidebar = dom.createDiv('sidebar');
 
     const title = dom.createDiv('title');
     title.textContent = 'Projects';
 
-    const proj1 = dom.createDiv('project active','project-1');
-    proj1.textContent = 'project 1';
+    const add = dom.createImg('add.svg','add project','svg add');
+    add.addEventListener('mousedown', () => {
+        document.querySelector('.form-popup.proj').style.display = 'block';
+    });
 
-    sidebar.append(title,proj1);
+    title.append(add);
+
+    sidebar.append(title);
+
+    sidebar.append(...fillProjects());
 
     dom.body.append(sidebar);
 }
 
-const createTask = (module) => {
+const createTask = (module,task,inputDate) => { //maybe not needed
     const circle = dom.createImg('circle.svg','checkbox','svg check-box');
     const title = dom.createDiv('title');
-    title.textContent = 'Laundry';
+    title.textContent = task;
     const date = dom.createDiv('due-date');
-    date.textContent = '8/9/2022 5:00PM';
+    date.textContent = inputDate;
 
     module.append(circle,title,date);
 }
@@ -48,15 +138,43 @@ const createTask = (module) => {
 const createBody = () => {
     const main = dom.createDiv('main');
 
+    const button = document.createElement('button');
+    button.id = 'add-task';
+    button.setAttribute('type','button');
+    button.textContent = 'Add task';
+    button.addEventListener('mousedown',() => {
+        document.querySelector('.task').style.display = 'block';
+    });
+
     const container = dom.createDiv('container');
 
-    const module1 = dom.createDiv('module','module-1');
+    // for (let i = 0; i<e.target)
 
-    createTask(module1);
+    // const module1 = dom.createDiv('module','module-1');
 
-    container.append(module1);
+    // createTask(module1,'Laundry','8/10/2022 5:00PM');
 
-    main.append(container);
+    // container.append(module1);
+
+    main.append(button,container);
 
     dom.body.append(main);
 }
+
+function fillProjects() {
+    let projectNodeList = [];
+
+    for (let i = 0; i<projectList.length; i++) {
+        const project = dom.createDiv('project',`project-${i}`);
+        project.textContent = projectList[i].name
+        projectNodeList.push(project);
+    }
+
+    return projectNodeList;
+}
+
+function fillTasks() {
+
+}
+
+export {createBody,createSidebar,createHeader,createProjPopup,createTaskPopup};

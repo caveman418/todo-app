@@ -22,7 +22,21 @@ const createImg = (src,alt,classes) => {
     
     img.setAttribute('alt',alt);
     img.setAttribute('src',`../src/images/${src}`);
+
     return img;
 }
 
-export { body, createDiv, createImg };
+const createInput = (id,type,inner) => {
+    const label = document.createElement('label');
+    label.setAttribute('for',id);
+
+    const input = document.createElement('input');
+    input.setAttribute('type',type);
+    input.setAttribute('name',id);
+    input.setAttribute('id',id);
+    input.setAttribute('required','');
+
+    return [label,input];
+}
+
+export { body, createDiv, createImg, createInput };

@@ -70,6 +70,17 @@ body {
     font-weight: bold;
 }
 
+.sidebar .svg {
+    height: 20px;
+}
+
+.sidebar .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
 
 /* Header */
 
@@ -119,6 +130,18 @@ body {
 
 .main {
     background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main button {
+    margin-top: 50px;
+    padding: 1.5rem 3rem;
+    border: none;
+    background-color: var(--theme-contrast);
+    cursor: pointer;
+    font-weight: bold;
 }
 
 .container {
@@ -127,7 +150,7 @@ body {
     justify-content: center;
     padding-left: 200px;
 
-    padding-top: 100px;
+    padding-top: 50px;
     width: 100%;
 }
 
@@ -142,7 +165,7 @@ body {
     gap: 5px;
     padding: 20px 0;
 
-    border-bottom: 1px solid var(--theme-contrast);
+    border-bottom: 2px solid var(--theme-contrast);
     color: black;
     width: 100%;
 }
@@ -169,7 +192,7 @@ body {
 /* Form popup */
 
 .form-popup {
-    /* display: none; */
+    display: none;
 	position: fixed;
 	top: 25%;
 	left: 50%;
