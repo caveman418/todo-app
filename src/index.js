@@ -1,8 +1,4 @@
 import "./style.css";
-import * as module from './modules/UI';
+import { init } from "./modules/UI";
 
-module.createProjPopup();
-module.createTaskPopup();
-module.createHeader();
-module.createSidebar();
-module.createBody();
+init();

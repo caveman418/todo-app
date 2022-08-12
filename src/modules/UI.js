@@ -8,21 +8,24 @@ const Task = (task,inputDate) => { //Task factory
 
 const Project = (name) => { //Project factory
     let tasks = [];
+
+	const getTasks = () => {
+		return [...tasks];
+	}
+
     const add = (taskObj) => {
         tasks.push(taskObj);
     }
+
     const remove = (taskObj) => {
-        const index = task.indexOf(taskObj);
+        const index = tasks.indexOf(taskObj);
         if (index > -1) { //if the input parameter exists
             tasks.splice(index,1);
         }
     }
-    return {name,add,remove};
-}
 
-let proj1 = Project('proj1'); //for testing purposes
-let proj2 = Project('proj2'); //for testing purposes
-projectList.push(proj1,proj2); //for testing purposes
+    return {name,getTasks,add,remove};
+}
 
 const createHeader = () => {
     const header = dom.createDiv('header');
@@ -63,6 +66,16 @@ const createTaskPopup = () => {
     submitButton.setAttribute('type','submit');
     submitButton.classList.add('submit');
     submitButton.textContent = 'Add task';
+    submitButton.addEventListener('mousedown',() => {
+        const activeProject = document.querySelector('.active');
+        let newTask = Task(task[1].value,`${date[1].value}   ${time[1].value}`);
+        projectList[Number(activeProject.id)].add(newTask);
+        task[1].value = '';
+        date[1].value = '';
+        time[1].value = '';
+        popup.style.display = 'none';
+        createBody(activeProject.id);
+    });
 
     const exitButton = document.createElement('button');
     exitButton.setAttribute('type','button');
@@ -91,12 +104,24 @@ const createProjPopup = () => {
     const submitButton = document.createElement('button');
     submitButton.setAttribute('type','submit');
     submitButton.classList.add('submit');
-    submitButton.textContent = 'Add task';
+    submitButton.textContent = 'Add project';
+    submitButton.addEventListener('mousedown',()=>{
+        if (name[1].value==='') return;
+        projectList.push(Project(`${name[1].value}`));
+        name[1].value = '';
+        popup.style.display = 'none';
+        createSidebar();
+        createBody(projectList.length-1);
+    });
 
     const exitButton = document.createElement('button');
     exitButton.setAttribute('type','button');
     exitButton.classList.add('exit');
     exitButton.textContent = 'Exit';
+    exitButton.addEventListener('mousedown',() => {
+        name[1].value = '';
+        popup.style.display = 'none';
+    })
 
     form.append(h,...name,submitButton,exitButton);
 
@@ -106,6 +131,10 @@ const createProjPopup = () => {
 }
 
 const createSidebar = () => {
+    const currentSidebar = document.querySelector('.sidebar'); //will be null on init
+
+    if (currentSidebar) {currentSidebar.remove()};
+
     const sidebar = dom.createDiv('sidebar');
 
     const title = dom.createDiv('title');
@@ -125,17 +154,11 @@ const createSidebar = () => {
     dom.body.append(sidebar);
 }
 
-const createTask = (module,task,inputDate) => { //maybe not needed
-    const circle = dom.createImg('circle.svg','checkbox','svg check-box');
-    const title = dom.createDiv('title');
-    title.textContent = task;
-    const date = dom.createDiv('due-date');
-    date.textContent = inputDate;
+const createBody = (projectID) => {
+    const currentMain = document.querySelector('.main'); //will be null on init
 
-    module.append(circle,title,date);
-}
+    if (currentMain) {currentMain.remove()};
 
-const createBody = () => {
     const main = dom.createDiv('main');
 
     const button = document.createElement('button');
@@ -143,18 +166,12 @@ const createBody = () => {
     button.setAttribute('type','button');
     button.textContent = 'Add task';
     button.addEventListener('mousedown',() => {
-        document.querySelector('.task').style.display = 'block';
+        if (currentMain) document.querySelector('.task').style.display = 'block';
     });
 
     const container = dom.createDiv('container');
 
-    // for (let i = 0; i<e.target)
-
-    // const module1 = dom.createDiv('module','module-1');
-
-    // createTask(module1,'Laundry','8/10/2022 5:00PM');
-
-    // container.append(module1);
+    if (currentMain) container.append(...fillTasks(projectID));
 
     main.append(button,container);
 
@@ -165,16 +182,55 @@ function fillProjects() {
     let projectNodeList = [];
 
     for (let i = 0; i<projectList.length; i++) {
-        const project = dom.createDiv('project',`project-${i}`);
-        project.textContent = projectList[i].name
+        const project = dom.createDiv('project',`${i}`);
+        project.textContent = projectList[i].name;
+        if (i===projectList.length-1) {project.classList.add('active');}
+        project.addEventListener('mousedown',() => {
+            document.querySelectorAll('.sidebar > div').forEach((div)=>div.classList.remove('active'));
+            project.classList.add('active');
+            createBody(project.id);
+        });
         projectNodeList.push(project);
     }
 
     return projectNodeList;
 }
 
-function fillTasks() {
+function fillTasks(projectID) {
+	let taskNodeList = [];
 
+    let activeProject = projectList[projectID];
+	let activeTasks = activeProject.getTasks(); //returns matrix filled with task objects
+	
+	for (let i=0; i<activeTasks.length; i++) {
+		const taskName = activeTasks[i].task;
+		const taskDate = activeTasks[i].inputDate;
+		
+		const module = dom.createDiv('module',`module-${i}`);
+        module.addEventListener('mousedown',(e) => {
+            activeProject.remove(activeTasks[i]);
+            module.remove();
+        });
+		const circle = dom.createImg('circle.svg','checkbox','svg check-box');
+		const title = dom.createDiv('title');
+		title.textContent = taskName;
+		const date = dom.createDiv('due-date');
+		date.textContent = taskDate;
+		
+		module.append(circle,title,date);
+		taskNodeList.push(module);
+	}
+	
+	return taskNodeList;
 }
 
-export {createBody,createSidebar,createHeader,createProjPopup,createTaskPopup};
+const init = () => {
+    createProjPopup();
+    createTaskPopup();
+    createHeader();
+    createSidebar();
+    createBody();
+}
+
+
+export { init };
