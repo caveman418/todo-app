@@ -2,16 +2,16 @@ import * as dom from './dom';
 
 let projectList = [];
 
+const updateStorage = () => {
+    localStorage.setItem('projectObject',JSON.stringify(projectList));
+}
+
 const Task = (task,inputDate) => { //Task factory
     return {task,inputDate};
 }
 
 const Project = (name) => { //Project factory
     let tasks = [];
-
-	const getTasks = () => {
-		return [...tasks];
-	}
 
     const add = (taskObj) => {
         tasks.push(taskObj);
@@ -24,7 +24,7 @@ const Project = (name) => { //Project factory
         }
     }
 
-    return {name,getTasks,add,remove};
+    return {name,tasks,add,remove};
 }
 
 const createHeader = () => {
@@ -74,6 +74,7 @@ const createTaskPopup = () => {
         date[1].value = '';
         time[1].value = '';
         popup.style.display = 'none';
+        updateStorage();
         createBody(activeProject.id);
     });
 
@@ -110,6 +111,7 @@ const createProjPopup = () => {
         projectList.push(Project(`${name[1].value}`));
         name[1].value = '';
         popup.style.display = 'none';
+        updateStorage();
         createSidebar();
         createBody(projectList.length-1);
     });
@@ -166,12 +168,12 @@ const createBody = (projectID) => {
     button.setAttribute('type','button');
     button.textContent = 'Add task';
     button.addEventListener('mousedown',() => {
-        if (currentMain) document.querySelector('.task').style.display = 'block';
+        document.querySelector('.task').style.display = 'block';
     });
 
     const container = dom.createDiv('container');
 
-    if (currentMain) container.append(...fillTasks(projectID));
+    container.append(...fillTasks(projectID));
 
     main.append(button,container);
 
@@ -200,7 +202,7 @@ function fillTasks(projectID) {
 	let taskNodeList = [];
 
     let activeProject = projectList[projectID];
-	let activeTasks = activeProject.getTasks(); //returns matrix filled with task objects
+	let activeTasks = activeProject.tasks; //returns matrix filled with task objects
 	
 	for (let i=0; i<activeTasks.length; i++) {
 		const taskName = activeTasks[i].task;
@@ -209,6 +211,7 @@ function fillTasks(projectID) {
 		const module = dom.createDiv('module',`module-${i}`);
         module.addEventListener('mousedown',(e) => {
             activeProject.remove(activeTasks[i]);
+            updateStorage();
             module.remove();
         });
 		const circle = dom.createImg('circle.svg','checkbox','svg check-box');
@@ -216,7 +219,6 @@ function fillTasks(projectID) {
 		title.textContent = taskName;
 		const date = dom.createDiv('due-date');
 		date.textContent = taskDate;
-		
 		module.append(circle,title,date);
 		taskNodeList.push(module);
 	}
@@ -225,11 +227,26 @@ function fillTasks(projectID) {
 }
 
 const init = () => {
+    let storage = localStorage.getItem('projectObject');
+    if (storage) {
+        projectList = JSON.parse(storage);
+        for (let project of projectList) { //rebuild methods in each project object that is in localStorage
+            project.add = (taskObj) => {
+                project.tasks.push(taskObj);
+            }
+            project.remove = (taskObj) => {
+                const index = project.tasks.indexOf(taskObj);
+                if (index > -1) { //if the input parameter exists
+                    project.tasks.splice(index,1);
+                }
+            }
+        }
+    }
     createProjPopup();
     createTaskPopup();
     createHeader();
     createSidebar();
-    createBody();
+    createBody(projectList.length - 1); //renders newest project in projectList
 }
 
 
