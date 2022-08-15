@@ -1,4 +1,10 @@
 import * as dom from './dom';
+import img1 from '../../src/images/add.svg';
+import img2 from '../../src/images/bell.svg';
+import img3 from '../../src/images/circle.svg'
+import img4 from '../../src/images/menu.svg';
+import img5 from '../../src/images/profile-pic.png';
+import img6 from '../../src/images/search.svg';
 
 let projectList = [];
 
@@ -30,18 +36,18 @@ const Project = (name) => { //Project factory
 const createHeader = () => {
     const header = dom.createDiv('header');
 
-    const menu = dom.createImg('menu.svg','menu button','svg menu-button');
+    const menu = dom.createImg(img4,'menu button','svg menu-button');
 
     const searchBar = dom.createDiv('search-bar');
-    const search = dom.createImg('search.svg','search-button','svg search-button');
+    const search = dom.createImg(img6,'search-button','svg search-button');
     const input = document.createElement('input');
     input.setAttribute('type','text');
     input.setAttribute('maxlength','100');
     searchBar.append(search,input);
 
-    const add = dom.createImg('add.svg','add project','svg add');
-    const bell = dom.createImg('bell.svg','notifications','svg notification');
-    const profilePic = dom.createImg('profile-pic.png','profile picture','img profile-pic');
+    const add = dom.createImg(img1,'add project','svg add');
+    const bell = dom.createImg(img2,'notifications','svg notification');
+    const profilePic = dom.createImg(img5,'profile picture','img profile-pic');
 
     header.append(menu,searchBar,add,bell,profilePic);
 
@@ -142,7 +148,7 @@ const createSidebar = () => {
     const title = dom.createDiv('title');
     title.textContent = 'Projects';
 
-    const add = dom.createImg('add.svg','add project','svg add');
+    const add = dom.createImg(img1,'add project','svg add');
     add.addEventListener('mousedown', () => {
         document.querySelector('.form-popup.proj').style.display = 'block';
     });
@@ -214,7 +220,7 @@ function fillTasks(projectID) {
             updateStorage();
             module.remove();
         });
-		const circle = dom.createImg('circle.svg','checkbox','svg check-box');
+		const circle = dom.createImg(img3,'checkbox','svg check-box');
 		const title = dom.createDiv('title');
 		title.textContent = taskName;
 		const date = dom.createDiv('due-date');

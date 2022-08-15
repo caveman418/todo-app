@@ -21,7 +21,7 @@ const createImg = (src,alt,classes) => {
     }
     
     img.setAttribute('alt',alt);
-    img.setAttribute('src',`../src/images/${src}`);
+    img.setAttribute('src',src);
 
     return img;
 }
